@@ -165,3 +165,220 @@ promise
     .catch((error) => {
         console.log(error);
     });
+
+
+
+// Третья домашка
+
+
+// ФУНКЦИЯ DELAY
+
+function delay(value, ms, shouldFail = false) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (shouldFail) {
+                reject(new Error(`Ошибка при обработке: ${value}`));
+            } else {
+                resolve(value);
+            }
+        }, ms);
+    });
+}
+
+
+// ЗАДАНИЕ 1
+// Три последовательных delay
+// Второй delay падает
+
+console.log("========== ЗАДАНИЕ 1 ==========");
+
+delay(1, 500)
+    .then((value) => {
+        console.log("Первый delay:", value);
+
+        return delay(value + 1, 500, true);
+    })
+    .then((value) => {
+        console.log("Второй delay:", value);
+
+        return delay(value + 1, 500);
+    })
+    .then((value) => {
+        console.log("Третий delay:", value);
+    })
+    .catch((error) => {
+        console.log("Ошибка:", error.message);
+    })
+    .finally(() => {
+        console.log("finally: цепочка завершена");
+    });
+
+
+// ЗАДАНИЕ 2
+// Тот же принцип через async/await
+
+async function firstAsyncAwait() {
+
+    console.log("========== ЗАДАНИЕ 2 ==========");
+
+    try {
+        let value = await delay(1, 500);
+
+        console.log("Первый delay:", value);
+
+        value = await delay(value + 1, 500, true);
+
+        console.log("Второй delay:", value);
+
+        value = await delay(value + 1, 500);
+
+        console.log("Третий delay:", value);
+
+    } catch (error) {
+        console.log("Ошибка:", error.message);
+
+    } finally {
+        console.log("finally: цепочка завершена");
+    }
+}
+
+firstAsyncAwait();
+
+
+// ЗАДАНИЕ 2.2
+// Массив из 4 значений
+// Обрабатываем последовательно
+// Ошибка одного элемента не останавливает цикл
+
+async function processArray() {
+
+    console.log("========== МАССИВ И ASYNC/AWAIT ==========");
+
+    const values = [1, 2, 3, 4];
+
+    const results = [];
+
+    for (const value of values) {
+
+        try {
+
+            const result = await delay(
+                value,
+                500,
+                Math.random() > 0.7
+            );
+
+            results.push({
+                value: result
+            });
+
+            console.log("Успешно:", result);
+
+        } catch (error) {
+
+            results.push({
+                value: value,
+                error: error.message
+            });
+
+            console.log("Ошибка:", error.message);
+        }
+    }
+
+    console.log("Итоговый массив:", results);
+}
+
+processArray();
+
+
+// ЗАДАНИЕ 3
+// Promise.all
+
+async function promiseAllExample() {
+
+    console.log("========== PROMISE.ALL ==========");
+
+    const promises = [
+        delay(1, 1000),
+        delay(2, 500),
+        delay(3, 1500, true),
+        delay(4, 700)
+    ];
+
+    try {
+
+        const results = await Promise.all(promises);
+
+        console.log("Все успешно:", results);
+
+    } catch (error) {
+
+        console.log("Promise.all поймал ошибку:", error.message);
+    }
+}
+
+promiseAllExample();
+
+
+// Promise.Allsettled
+
+
+async function promiseAllSettledExample() {
+
+    console.log("========== PROMISE.ALLSETTLED ==========");
+
+    const promises = [
+        delay(1, 1000),
+        delay(2, 500),
+        delay(3, 1500, true),
+        delay(4, 700)
+    ];
+
+    const results = await Promise.allSettled(promises);
+
+    console.log("Все результаты:", results);
+
+
+    const succeeded = results.filter(
+        (item) => item.status === "fulfilled"
+    );
+
+
+    const failed = results.filter(
+        (item) => item.status === "rejected"
+    );
+
+
+    console.log("Успешные:", succeeded);
+
+    console.log("Ошибки:", failed);
+}
+
+promiseAllSettledExample();
+
+
+// Promise.race
+
+async function promiseRaceExample() {
+
+    console.log("========== PROMISE.RACE ==========");
+
+    try {
+
+        const result = await Promise.race([
+
+            delay("Полезный результат", 2000),
+
+            delay("Таймаут", 500, true)
+
+        ]);
+
+        console.log("Победитель:", result);
+
+    } catch (error) {
+
+        console.log("Promise.race:", error.message);
+    }
+}
+
+promiseRaceExample();
