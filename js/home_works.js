@@ -186,7 +186,7 @@ function delay(value, ms, shouldFail = false) {
 }
 
 
-// ЗАДАНИЕ 1
+// Задание 1
 // Три последовательных delay
 // Второй delay падает
 
@@ -214,7 +214,7 @@ delay(1, 500)
     });
 
 
-// ЗАДАНИЕ 2
+// Задание 2
 // Тот же принцип через async/await
 
 async function firstAsyncAwait() {
@@ -245,7 +245,7 @@ async function firstAsyncAwait() {
 firstAsyncAwait();
 
 
-// ЗАДАНИЕ 2.2
+// Задание 2.2
 // Массив из 4 значений
 // Обрабатываем последовательно
 // Ошибка одного элемента не останавливает цикл
@@ -291,7 +291,7 @@ async function processArray() {
 processArray();
 
 
-// ЗАДАНИЕ 3
+// Задание 3
 // Promise.all
 
 async function promiseAllExample() {
