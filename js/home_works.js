@@ -382,3 +382,69 @@ async function promiseRaceExample() {
 }
 
 promiseRaceExample();
+
+// Домашнее задание 5
+
+const form = document.querySelector("#homeworkForm");
+const result = document.querySelector("#result");
+const agreement = document.querySelector("#agreement");
+
+const url = "https://jsonplaceholder.typicode.com/posts";
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    // Проверяем checkbox
+    if (!agreement.checked) {
+        result.textContent = "Please agree to the processing of your data";
+        return;
+    }
+
+    try {
+        // 1. Aapplication/JSON
+
+        const formData = new FormData(form);
+
+        const data = Object.fromEntries(formData);
+
+        const jsonResponse = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!jsonResponse.ok) {
+            throw new Error(`JSON error: ${jsonResponse.status}`);
+        }
+
+        const jsonResult = await jsonResponse.json();
+
+        console.log("JSON response:", jsonResult);
+
+
+        // 2. Multipart/FORM-DATA
+
+        const multipartData = new FormData(form);
+
+        const formDataResponse = await fetch(url, {
+            method: "POST",
+            body: multipartData
+        });
+
+        if (!formDataResponse.ok) {
+            throw new Error(`FormData error: ${formDataResponse.status}`);
+        }
+
+        const formDataResult = await formDataResponse.json();
+
+        console.log("FormData response:", formDataResult);
+
+        result.textContent = "Data successfully sent!";
+
+    } catch (error) {
+        console.error("Error:", error);
+        result.textContent = `Error: ${error.message}`;
+    }
+});
